@@ -2,7 +2,7 @@ import openai
 from PyPDF2 import PdfReader
 
 # Set up your OpenAI API credentials
-openai.api_key = "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"
+openai.api_key = "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"
 
 # Function to extract text from a PDF file using a streaming approach
 def extract_text_from_pdf(file_path):
@@ -40,14 +40,14 @@ user_message = "what is plan name?"
 pdf_file_path = "docs/demo3.pdf"  # Replace with the path to your PDF file
 
 # Process the PDF document in smaller chunks
-chunk_size = 5  # Number of pages to process at a time
+chunk_size = 2  # Number of pages to process at a time
 text = ""
 with open(pdf_file_path, 'rb') as file:
     reader = PdfReader(file)
     num_pages = len(reader.pages)
     print("pages:",num_pages)
 
-    for start_page in range(0, 10, chunk_size):
+    for start_page in range(0, num_pages, chunk_size):
         end_page = min(start_page + chunk_size, num_pages)
         page_range = range(start_page, end_page)
 
