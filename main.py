@@ -1,8 +1,10 @@
+import time
+
 import openai
 from PyPDF2 import PdfReader
 
 # Set up your OpenAI API credentials
-openai.api_key = "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"
+openai.api_key = "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"
 
 # Function to extract text from a PDF file using a streaming approach
 def extract_text_from_pdf(file_path):
@@ -20,7 +22,7 @@ def extract_text_from_pdf(file_path):
 # Function to generate a chatbot response
 def generate_chatbot_response(message, chat_log=[]):
     # Set the model and parameters
-    model = "gpt-3.5-turbo"
+    model = "gpt-3.5-turbo-16k"
     parameters = {
         "messages": [{"role": "system", "content": "You are a helpful assistant."}]
                    + [{"role": "user", "content": msg} for msg in chat_log + [message]],
@@ -36,17 +38,20 @@ def generate_chatbot_response(message, chat_log=[]):
     return response.choices[0].message.content.strip()
 
 # Example usage
-user_message = "what is plan name?"
+user_message = "Is cancer covered in this plan?"
 pdf_file_path = "docs/demo3.pdf"  # Replace with the path to your PDF file
 
 # Process the PDF document in smaller chunks
-chunk_size = 2  # Number of pages to process at a time
+chunk_size = 8  # Number of pages to process at a time
 text = ""
+
+sample = "drink water daily. apples are good for health. stay healthy"
 with open(pdf_file_path, 'rb') as file:
     reader = PdfReader(file)
     num_pages = len(reader.pages)
     print("pages:",num_pages)
 
+    cnt = 0
     for start_page in range(0, num_pages, chunk_size):
         end_page = min(start_page + chunk_size, num_pages)
         page_range = range(start_page, end_page)
@@ -60,8 +65,11 @@ with open(pdf_file_path, 'rb') as file:
         # Process the chunk text in the chatbot
         chat_log = [chunk_text]  # Add the previously processed text as conversation history
         print("text:", chat_log)
+        if cnt  == 2:
+            time.sleep(60)
+            print("sleep ended:", cnt)
         chatbot_response = generate_chatbot_response(user_message, chat_log)
-
+        cnt = cnt+1
         # Append the chatbot response to the overall text
         text += chatbot_response
 
