@@ -1,9 +1,11 @@
-
+import openai
+import subprocess
+import requests
+from flask import send_file
 from PyPDF2 import PdfReader
 import openai
-
-import CONSTANTS
-from mongo_service import make_connection
+import torchvision.transforms as T
+import subprocess
 
 # Set up your OpenAI API credentials
 openai.api_key = "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"
@@ -79,5 +81,32 @@ def get_transcript(planId):
     saveDb.insert_one({"response":response})
     return response
 
+def generate_video_from_text(text):
+    # frames = []
+    # text = text[:300]
+    # Step 1: Generate a video script using the OpenAI API
+    # images = generate_images(text, 10, "1024x1024")
+    # for image in images:
+    #     image_data = requests.get(image.get("url")).content
+    #     image = Image.open(io.BytesIO(image_data))
+    #     frames.append(cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR))
 
+    # Create a video writer
+    # height, width, _ = frames[0].shape
+    # video_writer = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc(*'mp4v'), 1, (width, height))
 
+    # Write the image to the video
+    # for frame in frames:
+    #     video_writer.write(frame)
+
+    # # Release the video writer
+    # video_writer.release()
+
+    output_video = 'talk.mp4'
+    output_file = 'output_with_audio.mp4'
+    audio_file = 'output.mp3'
+
+    command = f'ffmpeg -i {output_video} -i {audio_file} -c:v copy -c:a aac -strict experimental {output_file}'
+    subprocess.call(command, shell=True)
+
+    return send_file(output_file, mimetype="video/mp4", as_attachment=True)
