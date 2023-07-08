@@ -2,9 +2,7 @@ import openai
 from PyPDF2 import PdfReader
 from flask import Flask, request
 import requests
-from main import getmessage, generate_video_from_text, getTextFromPdf
-from init_vectorstore import initiateVector
-from ask import getMessageFromText
+from main import getmessage, generate_video_from_text
 from mongo_service import make_connection
 import CONSTANTS
 
@@ -28,14 +26,6 @@ def video():
     print(text)
     return generate_video_from_text(text)
 
-
-@app.route('/langchain', methods = ['POST'])
-def langchain():
-    file = request.files['file']
-    text = getTextFromPdf(file)
-    message = request.args.get('message')
-    initiateVector(text)
-    return getMessageFromText(message)
 
 @app.route('/result', methods = ['POST'])
 def result():
