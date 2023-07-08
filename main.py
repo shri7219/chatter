@@ -6,6 +6,8 @@ from PyPDF2 import PdfReader
 import openai
 import torchvision.transforms as T
 import subprocess
+from mongo_service import make_connection
+import CONSTANTS
 
 # Set up your OpenAI API credentials
 openai.api_key = "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"
