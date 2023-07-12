@@ -1,16 +1,16 @@
 import requests
 
 CHUNK_SIZE = 1024
-url = "https://api.elevenlabs.io/v1/text-to-speech/OkAVXWGnT75RtBZ4GbXS/stream"
+url = "https://api.elevenlabs.io/v1/text-to-speech/fshHXoV5bk6k3sEIAdnD/stream"
 
 headers = {
     "Accept": "audio/mpeg",
     "Content-Type": "application/json",
-    "xi-api-key": "d060d080ed281f180151801279ba2552"
+    "xi-api-key": "d5e5db617c6fc73e79e9cb2b796cc435"
 }
 
 data = {
-    "text": "Once upon a time, in a bustling city, there lived a young woman named Ari. She was 25 years old, full of life, and had big dreams for her future. But one day, her world came crashing down when she was struck by excruciating pain throughout her body. Worried and desperate for relief, Ari rushed to the hospital.",
+    "text": "",
     "model_id": "eleven_monolingual_v1",
     "voice_settings": {
         "stability": 0.5,

@@ -6,6 +6,7 @@ import CONSTANTS
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
     return "Hello, I am healthy!"
@@ -17,6 +18,7 @@ def transcript():
     planId = request.args.get('planId')
     return get_transcript(planId)
 
+
 @app.route('/upload', methods=['POST'])
 def upload():
     print('reached here')
@@ -24,7 +26,8 @@ def upload():
     message = request.args.get('message')
     return getmessage(file, message)
 
-@app.route('/result', methods = ['POST'])
+
+@app.route('/result', methods=['POST'])
 def result():
     req = request.get_json()
     db = make_connection(CONSTANTS.QUESTION_MASTER_COLLECTION_NAME)
@@ -41,9 +44,13 @@ def result():
         if response.status_code == 200:
             response = response.json()
             answerDB = make_connection(CONSTANTS.ANSWER_MASTER_COLLECTION_NAME)
-            answerDB.insert_one({'questionId': question['questionId'], 'question': question['question'], 'planId':req['planId'], 'answer':response.get('text')})
+            answerDB.insert_one(
+                {'questionId': question['questionId'], 'question': question['question'], 'planId': req['planId'],
+                 'answer': response.get('text')})
         else:
             print('Error:', response.text)
-            
+
     return "true"
 
+
+app.run()

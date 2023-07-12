@@ -1,4 +1,3 @@
-
 from PyPDF2 import PdfReader
 import openai
 
@@ -6,10 +5,13 @@ import CONSTANTS
 from mongo_service import make_connection
 
 # Set up your OpenAI API credentials
-openai.api_key = "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"
+openai.api_key = "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"
 chunk_size = 8  # Number of pages to process at a time
 
-CONDENSE_PROMPT = 'Given the following conversation and a follow up question, You are a helpful AI assistant. Check what I have described in context and generate scenario based on that.'
+CONDENSE_PROMPT = 'Given the following conversation and a follow up question, You are a helpful AI assistant. ' \
+                  'Check what I have described in context and generate scenario based on that.'
+
+
 def getmessage(file, message):
     reader = PdfReader(file)
     num_pages = len(reader.pages)
@@ -50,7 +52,7 @@ def generate_chatbot_response(message, chat_log=[]):
     parameters = {
         "messages": [{"role": "system", "content": CONDENSE_PROMPT}]
                     + [{"role": "user", "content": msg} for msg in chat_log + [message]],
-        "max_tokens": 100,
+        "max_tokens": 1000,
         "temperature": 0.2
     }
 
@@ -65,19 +67,16 @@ def generate_chatbot_response(message, chat_log=[]):
 
 def get_transcript(planId):
     answerDB = make_connection(CONSTANTS.ANSWER_MASTER_COLLECTION_NAME)
-    records = answerDB.find({"planId":planId})
-    text =''
+    records = answerDB.find({"planId": planId})
+    text = ''
     for record in records:
         text += record["answer"]
     text.replace('\n', ' ')
-    chat_log =[text]
+    chat_log = [text]
 
     input = 'There is a fictional character named “Ari” who is a 25 year old female. One day Ari feels severe pain and has to rush to the hospital. The doctors find out that she has a huge kidney stone which needs attention and she has to get admitted in the hospital for 3 days. Given the above mentioned scenario and the benefits of her health insurance plan mentioned in the context, generate a fictional story of Ari to demonstrate how her health plan helped her with various expenses. This fictional story should be helpful in convincing people to buy health insurance. '
     print("answers:", chat_log)
     response = generate_chatbot_response(input, chat_log)
     saveDb = make_connection(CONSTANTS.AUDIO_TRANSCRIPPT_COLLECTION_NAME)
-    saveDb.insert_one({"response":response})
+    saveDb.update_one({"planId": planId}, {'$set': {"response": response, "planId": planId}})
     return response
-
-
-
