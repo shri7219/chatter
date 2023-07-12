@@ -1,6 +1,6 @@
 from flask import Flask, request
 import requests
-from main import getmessage, get_transcript
+from main import getmessage, get_transcript, generate_video_from_text
 from mongo_service import make_connection
 import CONSTANTS
 
@@ -25,9 +25,13 @@ def upload():
     file = request.files['file']  # Access the uploaded file
     message = request.args.get('message')
     return getmessage(file, message)
+@app.route('/video', methods=['POST'])
+def video():
+    text = request.get_json()['text']
+    print(text)
+    return generate_video_from_text(text)
 
-
-@app.route('/result', methods=['POST'])
+@app.route('/result', methods = ['POST'])
 def result():
     req = request.get_json()
     db = make_connection(CONSTANTS.QUESTION_MASTER_COLLECTION_NAME)
